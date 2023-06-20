@@ -14,9 +14,10 @@ namespace FoodCornerApi.Infrastructure.Extensions
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{area=exists}/{controller=home}/{action=index}");
+            app.MapControllers();
+            //app.MapControllerRoute(
+            //    name: "default",
+            //    pattern: "{area=exists}/{controller=home}/{action=index}");
 
             //app.MapHub<AlertHub>("hubs/alert-hub");
             //app.MapHub<ChatHub>("hubs/chat-hub");

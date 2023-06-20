@@ -2,17 +2,9 @@
 {
     public class ListDto
     {
-        public ListDto(int id, string title, string parentName, string backgroundİmageUrl)
-        {
-            Id = id;
-            Title = title;
-            ParentName = parentName;
-            BackgroundİmageUrl = backgroundİmageUrl;
-        }
-
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string ParentName { get; set; }
-        public string BackgroundİmageUrl { get; set; }
+        public int Id { get; set; } = default!;
+        public string Title { get; set; } = default!;
+        public string? ParentName { get; set; } = default!;
+        public string BackgroundİmageUrl { get; set; } = default!;
     }
 }

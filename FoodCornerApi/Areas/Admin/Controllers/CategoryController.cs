@@ -1,4 +1,5 @@
-﻿using FoodCornerApi.Areas.Admin.Dtoes.Category;
+﻿using AutoMapper;
+using FoodCornerApi.Areas.Admin.Dtoes.Category;
 using FoodCornerApi.Database;
 using FoodCornerApi.Database.Models;
 using FoodCornerApi.Services.Abstracts;
@@ -16,62 +17,60 @@ namespace FoodCornerApi.Areas.Admin.Controllers
     {
         private readonly DataContext _dataContext;
         private readonly IFileService _fileService;
+        private readonly IMapper _mapper;
 
-        public CategoryController(DataContext dataContext, IFileService fileService)
+        public CategoryController(DataContext dataContext, IFileService fileService, IMapper mapper)
         {
             _dataContext = dataContext;
             _fileService = fileService;
+            _mapper = mapper;
         }
 
 
-        [HttpGet("List",Name ="admin-category-list")]
+        [HttpGet("List")]
         public async Task<IActionResult> List()
         {
-            var model = await _dataContext.Categories.Select(c => new ListDto(c.Id, c.Title, c.Parent.Title,
-                _fileService.GetFileUrl(c.BackgroundİmageInFileSystem, Contracts.File.UploadDirectory.Category))).ToListAsync();
-
-            return Ok(model);
+            var categories = await _dataContext.Categories.ToListAsync();
+             return Ok(_mapper.Map<List<ListDto>>(categories));
         }
-
-        [HttpPost("Add",Name ="admin-category-add")]
+        [HttpPost("Add")]
         public async Task<IActionResult> Add([FromForm] AddDto dto)
         {
 
-            if (!ModelState.IsValid) 
-            {
-              return BadRequest(ModelState);
-            }
-
-                      
-            var imageNameInSystem = await _fileService.UploadAsync(dto.Backgroundİmage, Contracts.File.UploadDirectory.Category);
-
-
-            var category = new Category
-            {
-
-                Title = dto.Title,
-                ParentId = dto.CategoryId,
-                Backgroundİmage = dto.Backgroundİmage.FileName,
-                BackgroundİmageInFileSystem = imageNameInSystem
-
-            };
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var imageNameInSystem = await _fileService.UploadAsync(dto.Backgroundİmage!, Contracts.File.UploadDirectory.Category);
+            var category = _mapper.Map<AddDto, Category>(dto);
+            category.BackgroundİmageInFileSystem = imageNameInSystem;
             await _dataContext.Categories.AddAsync(category);
             await _dataContext.SaveChangesAsync();
+            return Ok($"Category({category.Title}) Aded Sucesifully");
+        }
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id,[FromForm]UpdateDto dto) 
+        {
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
 
+            var category = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
-            return Ok($"Caategory({category.Title}) Aded Sucesifully");
+            if (category is null) return NotFound($"Not Found!!");
+
+            if (dto.Backgroundİmage is not null)
+            {
+                await _fileService.DeleteAsync(category.BackgroundİmageInFileSystem, Contracts.File.UploadDirectory.Category);
+            }
+            var imageNameInSystem = await _fileService.UploadAsync(dto.Backgroundİmage!, Contracts.File.UploadDirectory.Category);
+            var updatedCategory = _mapper.Map(dto,category);
+            updatedCategory.BackgroundİmageInFileSystem = imageNameInSystem;
+            await _dataContext.SaveChangesAsync();
+            return Ok("Product Updated Sucesifully!");
         }
 
-
-
-        [HttpDelete("delete/{id}",Name ="admin-category-delete")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id) 
         {
-             var category = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
-
+            var category = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
             var allCategory = await _dataContext.Categories.ToListAsync();
             if (category is null){ return NotFound(); }
-
             foreach (var cate in allCategory)
             {
                 if (category.Id == cate.Id)
@@ -80,7 +79,6 @@ namespace FoodCornerApi.Areas.Admin.Controllers
                     _dataContext.Remove(cate);
                 }
             }
-
             await _fileService.DeleteAsync(category.BackgroundİmageInFileSystem,Contracts.File.UploadDirectory.Category);
             _dataContext.Remove(category);
             await _dataContext.SaveChangesAsync();

@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using AspNetCore.IServiceCollection.AddIUrlHelper;
 using FoodCornerApi.BackgroundServices;
 using FoodCornerApi.Infrastructure.Configurations;
+using FoodCornerApi.Areas.Admin.Mappers;
 
 namespace FoodCornerApi.Infrastructure.Extensions
 {
@@ -27,6 +28,7 @@ namespace FoodCornerApi.Infrastructure.Extensions
             services.AddUrlHelper();
 
             services.AddSwaggerGen();
+            services.AddAutoMapper(typeof(Program));
 
             //services.AddScoped<ValidationCurrentUserAttribute>();
 

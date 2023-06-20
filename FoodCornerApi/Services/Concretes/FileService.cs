@@ -47,7 +47,7 @@ namespace FoodCornerApi.Services.Concretes
 
         public string GetFileUrl(string? fileName, UploadDirectory uploadDirectory)
         {
-            string initialSegment = "Client/custom-files/";
+            string initialSegment = "Client/custom-files";
 
             switch (uploadDirectory)
             {
