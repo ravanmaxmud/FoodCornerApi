@@ -52,7 +52,7 @@ namespace FoodCornerApi.Areas.Admin.Controllers
 
             var category = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (category is null) return NotFound($"Not Found!!");
+            if (category is null) return NotFound($"Not Found!!");  
 
             if (dto.Backgroundİmage is not null)
             {
@@ -62,7 +62,7 @@ namespace FoodCornerApi.Areas.Admin.Controllers
             var updatedCategory = _mapper.Map(dto,category);
             updatedCategory.BackgroundİmageInFileSystem = imageNameInSystem;
             await _dataContext.SaveChangesAsync();
-            return Ok("Product Updated Sucesifully!");
+            return Ok("Category Updated Sucesifully!");
         }
 
         [HttpDelete("delete/{id}")]
