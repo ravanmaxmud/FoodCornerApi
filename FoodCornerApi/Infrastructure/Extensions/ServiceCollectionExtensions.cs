@@ -27,7 +27,11 @@ namespace FoodCornerApi.Infrastructure.Extensions
 
             services.AddUrlHelper();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(opt =>
+            {
+                opt.CustomSchemaIds(type => type.ToString());
+            });
+
             services.AddAutoMapper(typeof(Program));
 
             //services.AddScoped<ValidationCurrentUserAttribute>();
