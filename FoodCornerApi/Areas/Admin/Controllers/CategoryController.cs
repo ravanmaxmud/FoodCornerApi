@@ -49,15 +49,10 @@ namespace FoodCornerApi.Areas.Admin.Controllers
         public async Task<IActionResult> Update([FromRoute] int id,[FromForm]UpdateDto dto) 
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
-
             var category = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
-
             if (category is null) return NotFound($"Not Found!!");  
-
-            if (dto.Backgroundİmage is not null)
-            {
-                await _fileService.DeleteAsync(category.BackgroundİmageInFileSystem, Contracts.File.UploadDirectory.Category);
-            }
+            if (dto.Backgroundİmage is not null) await _fileService.DeleteAsync(category.BackgroundİmageInFileSystem, 
+             Contracts.File.UploadDirectory.Category);
             var imageNameInSystem = await _fileService.UploadAsync(dto.Backgroundİmage!, Contracts.File.UploadDirectory.Category);
             var updatedCategory = _mapper.Map(dto,category);
             updatedCategory.BackgroundİmageInFileSystem = imageNameInSystem;
