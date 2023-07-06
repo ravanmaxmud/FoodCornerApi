@@ -45,19 +45,20 @@ namespace FoodCornerApi.Services.Concretes
 
         public async Task AddProduct(AddDto model)
         {
-                CheckProductCategory(model.CategoryIds);
-              CheckProductTag(model.TagIds);
-              CheckProductSize(model.SizeIds);
+            CheckProductCategory(model.CategoryIds);
+            CheckProductTag(model.TagIds);
+            CheckProductSize(model.SizeIds);
 
             var discountPrice = model.Price * model.DiscountPercent / 100;
             var lastPrice = model.Price - discountPrice;
+
             model.DiscountPrice = lastPrice;
             var product = _mapper.Map<Product>(model);
-           
+
             if (model.PosterImage is not null)
             {
                 var imageNameInSystem = await _fileService.UploadAsync(model.PosterImage, UploadDirectory.Product);
-                await _dataContext.ProductImages.AddAsync(_mapper.Map<ProductImage>((model.PosterImage,product,true,imageNameInSystem)));
+                await _dataContext.ProductImages.AddAsync(_mapper.Map<ProductImage>((model.PosterImage, product, true, imageNameInSystem)));
             }
 
             if (model.AllImages is not null)
@@ -74,7 +75,7 @@ namespace FoodCornerApi.Services.Concretes
             }
             foreach (var tagId in model.TagIds)
             {
-                await _dataContext.ProductTags.AddAsync(_mapper.Map<ProductTag>((tagId, product)));  
+                await _dataContext.ProductTags.AddAsync(_mapper.Map<ProductTag>((tagId, product)));
             }
             foreach (var sizeId in model.SizeIds)
             {
@@ -82,6 +83,7 @@ namespace FoodCornerApi.Services.Concretes
             }
             await _dataContext.Products.AddAsync(product);
         }
+
         private void CheckProductSize(List<int> SizeIds)
         {
             foreach (var sizeId in SizeIds)
