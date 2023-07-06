@@ -118,6 +118,16 @@ namespace FoodCornerApi.Services.Concretes
             }
         }
 
+        public async Task DeleteProduct(Product product)
+        {
+            foreach (var productImage in product.ProductImages!)
+            {
+                await _fileService.DeleteAsync(productImage.ImageNames, Contracts.File.UploadDirectory.Product);
+            }
+            _dataContext.Products.Remove(product);
+            await _dataContext.SaveChangesAsync();
+        }
+
 
 
 

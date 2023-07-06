@@ -45,6 +45,16 @@ namespace FoodCornerApi.Areas.Admin.Controllers
             return Ok("Product Aded Sucesifully");
         }
 
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int? id)
+        {
+            var product = await _dataContext.Products.Include(p=> p.ProductImages).FirstOrDefaultAsync(x => x.Id == id);
+            if (product is null) return NotFound("Product Not Found");
+            await _productService.DeleteProduct(product!);
+            return Ok("Product Remove Sucesifully");
+
+        }
+
 
     }
 }
