@@ -40,14 +40,9 @@ namespace FoodCornerApi.Areas.Admin.Controllers
         public async Task<IActionResult> Add([FromForm] AddDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
             await _productService.AddProduct(dto);
-
             await _dataContext.SaveChangesAsync();
-
-            return Ok("ProductAded Sucesifully");
-
-
+            return Ok("Product Aded Sucesifully");
         }
 
 

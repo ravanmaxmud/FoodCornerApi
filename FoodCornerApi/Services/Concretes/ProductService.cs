@@ -45,40 +45,19 @@ namespace FoodCornerApi.Services.Concretes
 
         public async Task AddProduct(AddDto model)
         {
-              CheckProductCategory(model.CategoryIds);
+                CheckProductCategory(model.CategoryIds);
               CheckProductTag(model.TagIds);
               CheckProductSize(model.SizeIds);
 
             var discountPrice = model.Price * model.DiscountPercent / 100;
             var lastPrice = model.Price - discountPrice;
-
-            var product = new Product
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Price = model.Price,
-                CreatedAt = DateTime.Now,
-                UpdateAt = DateTime.Now,
-                DiscountPercent = model.DiscountPercent,
-                DiscountPrice = lastPrice,
-            };
-
-            await _dataContext.Products.AddAsync(product);
-
+            model.DiscountPrice = lastPrice;
+            var product = _mapper.Map<Product>(model);
+           
             if (model.PosterImage is not null)
             {
                 var imageNameInSystem = await _fileService.UploadAsync(model.PosterImage, UploadDirectory.Product);
-
-
-                var productImage = new ProductImage
-                {
-                    Product = product,
-                    ImageNames = model.PosterImage.FileName,
-                    ImageNameFileSystem = imageNameInSystem,
-                    IsPoster = true,
-
-                };
-                await _dataContext.ProductImages.AddAsync(productImage);
+                await _dataContext.ProductImages.AddAsync(_mapper.Map<ProductImage>((model.PosterImage,product,true,imageNameInSystem)));
             }
 
             if (model.AllImages is not null)
@@ -86,51 +65,23 @@ namespace FoodCornerApi.Services.Concretes
                 foreach (var image in model.AllImages!)
                 {
                     var allImageNameInSystem = await _fileService.UploadAsync(image, UploadDirectory.Product);
-
-                    var productAllImage = new ProductImage
-                    {
-                        Product = product,
-                        ImageNames = image.FileName,
-                        ImageNameFileSystem = allImageNameInSystem,
-                        IsPoster = false
-                    };
-                    await _dataContext.ProductImages.AddAsync(productAllImage);
+                    await _dataContext.ProductImages.AddAsync(_mapper.Map<ProductImage>((image, product, true, allImageNameInSystem)));
                 }
             }
-
-            ///////////////////////////////////////////////////////////////////
             foreach (var catagoryId in model.CategoryIds)
             {
-                var productCatagory = new ProductCatagory
-                {
-                    CatagoryId = catagoryId,
-                    Product = product,
-                };
-
-                await _dataContext.ProductCatagories.AddAsync(productCatagory);
+                await _dataContext.ProductCatagories.AddAsync(_mapper.Map<ProductCatagory>((catagoryId, product)));
             }
             foreach (var tagId in model.TagIds)
             {
-                var productTag = new ProductTag
-                {
-                    TagId = tagId,
-                    Product = product,
-                };
-
-                await _dataContext.ProductTags.AddAsync(productTag);
+                await _dataContext.ProductTags.AddAsync(_mapper.Map<ProductTag>((tagId, product)));  
             }
             foreach (var sizeId in model.SizeIds)
             {
-                var productSize = new ProductSize
-                {
-                    SizeId = sizeId,
-                    Product = product,
-                };
-
-                await _dataContext.ProductSizes.AddAsync(productSize);
+                await _dataContext.ProductSizes.AddAsync(_mapper.Map<ProductSize>((sizeId, product)));
             }
+            await _dataContext.Products.AddAsync(product);
         }
-
         private void CheckProductSize(List<int> SizeIds)
         {
             foreach (var sizeId in SizeIds)
@@ -142,20 +93,17 @@ namespace FoodCornerApi.Services.Concretes
                 }
             }
         }
-
         private void CheckProductTag(List<int> TagIds)
         {
             foreach (var tagId in TagIds)
             {
                 if (!_dataContext.Tags.Any(c => c.Id == tagId))
                 {
-                    
                     _logger.LogWarning($"Tag with id({tagId}) not found in db ");
                     throw new Exception($"Tag {tagId} not Found");
                 }
             }
         }
-
         private void CheckProductCategory(List<int> CategoryIds)
         {
             foreach (var categoryId in CategoryIds)
