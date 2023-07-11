@@ -1,5 +1,6 @@
 using FoodCornerApi.Infrastructure.Extensions;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 //Register services (IoC container)

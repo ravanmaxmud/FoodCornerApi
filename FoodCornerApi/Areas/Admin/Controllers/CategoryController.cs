@@ -40,6 +40,8 @@ namespace FoodCornerApi.Areas.Admin.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var imageNameInSystem = await _fileService.UploadAsync(dto.Backgroundİmage!, Contracts.File.UploadDirectory.Category);
             var category = _mapper.Map<AddDto, Category>(dto);
+            throw new Exception("Server Eror");
+
             category.BackgroundİmageInFileSystem = imageNameInSystem;
             await _dataContext.Categories.AddAsync(category);
             await _dataContext.SaveChangesAsync();
