@@ -44,7 +44,6 @@ namespace FoodCornerApi.Areas.Admin.Controllers
             await _dataContext.SaveChangesAsync();
             return Ok("Product Aded Sucesifully");
         }
-
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete([FromRoute] int? id)
         {
@@ -52,6 +51,23 @@ namespace FoodCornerApi.Areas.Admin.Controllers
             if (product is null) return NotFound("Product Not Found");
             await _productService.DeleteProduct(product!);
             return Ok("Product Remove Sucesifully");
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromForm]UpdateDto dto) 
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var product = await _dataContext.Products
+                .Include(p=> p.ProductCatagories)
+                .Include(p=> p.ProductTags)
+                .Include(p=> p.ProductImages)
+                .Include(p=> p.ProductSizes)
+                .FirstOrDefaultAsync(p=> p.Id == id);
+
+            if (product is null) return NotFound("Product Not Found");
+            await _productService.UpdateProduct(product,dto);
+            await _dataContext.SaveChangesAsync();
+            return Ok("Product Updated Sucesifully");
 
         }
 

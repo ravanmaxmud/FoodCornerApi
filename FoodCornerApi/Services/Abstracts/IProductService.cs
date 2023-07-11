@@ -15,7 +15,7 @@ namespace FoodCornerApi.Services.Abstracts
         //Task<bool> CheckProductCategory(List<int> CategoryIds, ModelStateDictionary ModelState);
 
         //Task<UpdateViewModel> GetUpdatedProduct(Product product, int id);
-        //Task UpdateProduct(Product product, UpdateViewModel model);
+        Task UpdateProduct(Product product, UpdateDto model);
 
     }
 }

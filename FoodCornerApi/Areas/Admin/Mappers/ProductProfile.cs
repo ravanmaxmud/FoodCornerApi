@@ -41,6 +41,13 @@ namespace FoodCornerApi.Areas.Admin.Mappers
               .ForMember(d => d.ImageNameFileSystem, opt => opt.MapFrom(src => src.imageNameInSystem))
              .ForMember(d => d.Product, opt => opt.MapFrom(src => src.product));
 
+            ///////////////////////////////////////Update///////////////////////////////////////////////////////////////
+
+            CreateMap<ProductSize, int>();
+            CreateMap<ProductCatagory, int>();
+            CreateMap<ProductTag, int>();
+            CreateMap<UpdateDto, Product>();
+
         }
 
     }
