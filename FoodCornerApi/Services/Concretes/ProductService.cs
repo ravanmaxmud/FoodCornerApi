@@ -9,6 +9,8 @@ using FoodCornerApi.Contracts.File;
 using FoodCornerApi.Database.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Humanizer;
+using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
+using FoodCornerApi.Exceptions;
 
 namespace FoodCornerApi.Services.Concretes
 {
@@ -100,7 +102,7 @@ namespace FoodCornerApi.Services.Concretes
                 if (!_dataContext.Tags.Any(c => c.Id == tagId))
                 {
                     _logger.LogWarning($"Tag with id({tagId}) not found in db ");
-                    throw new Exception($"Tag {tagId} not Found");
+                    throw new NotFoundException("Notfound");
                 }
             }
         }

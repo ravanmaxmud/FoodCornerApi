@@ -7,13 +7,11 @@ namespace FoodCornerApi.CustomExceptionMiddleware
     {
         private readonly RequestDelegate _requestDelegate;
         private readonly ILogger<ExceptionMiddleware> _logger;
-
         public ExceptionMiddleware(RequestDelegate requestDelegate, ILogger<ExceptionMiddleware> logger)
         {
             _requestDelegate = requestDelegate;
             _logger = logger;
         }
-
         public async Task InvokeAsync(HttpContext httpContext)
         {
             try
@@ -26,7 +24,6 @@ namespace FoodCornerApi.CustomExceptionMiddleware
                 await HandleExceptionAsync(httpContext);
             }
         }
-
         private Task HandleExceptionAsync(HttpContext httpContext)
         {
             httpContext.Response.ContentType = "application/json";

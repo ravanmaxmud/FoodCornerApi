@@ -1,5 +1,4 @@
-﻿
-
+﻿using FoodCornerApi.Exceptions;
 using FoodCornerApi.Extensions;
 
 namespace FoodCornerApi.Infrastructure.Extensions
@@ -9,7 +8,10 @@ namespace FoodCornerApi.Infrastructure.Extensions
         
         public static void ConfigureMiddlewarePipeline(this WebApplication app)
         {
+            
             app.UseStaticFiles();
+
+            app.UseExceptionHandler();
 
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -20,7 +22,13 @@ namespace FoodCornerApi.Infrastructure.Extensions
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapGet("/not-found-example", () =>
+            {
+                throw new NotFoundException("Information is not found in DB");
+            });
+
             app.MapControllers();
+
             //app.MapControllerRoute(
             //    name: "default",
             //    pattern: "{area=exists}/{controller=home}/{action=index}");
