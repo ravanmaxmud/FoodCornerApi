@@ -34,6 +34,7 @@ namespace FoodCornerApi.Areas.Admin.Controllers
         [HttpGet("List")]
         public async Task<IActionResult> List()
         {
+            throw new Exception();
             return Ok(await _productService.GetAllProduct());
         }
         [HttpPost("Add")]

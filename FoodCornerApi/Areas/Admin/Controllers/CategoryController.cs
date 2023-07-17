@@ -2,6 +2,7 @@
 using FoodCornerApi.Areas.Admin.Dtoes.Category;
 using FoodCornerApi.Database;
 using FoodCornerApi.Database.Models;
+using FoodCornerApi.Exceptions;
 using FoodCornerApi.Services.Abstracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +51,8 @@ namespace FoodCornerApi.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
             var category = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
-            if (category is null) return NotFound($"Not Found!!");  
+
+            if (category is null) return NotFound("Notfound");  
             if (dto.Backgroundİmage is not null) await _fileService.DeleteAsync(category.BackgroundİmageInFileSystem, 
              Contracts.File.UploadDirectory.Category);
             var imageNameInSystem = await _fileService.UploadAsync(dto.Backgroundİmage!, Contracts.File.UploadDirectory.Category);

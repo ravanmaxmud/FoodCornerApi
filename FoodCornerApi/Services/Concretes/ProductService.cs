@@ -91,7 +91,7 @@ namespace FoodCornerApi.Services.Concretes
                 if (!_dataContext.Sizes.Any(c => c.Id == sizeId))
                 {
                     _logger.LogWarning($"Size with id({sizeId}) not found in db ");
-                    throw new Exception($"Size {sizeId} not Found");
+                    throw new NotFoundException("Size", sizeId);
                 }
             }
         }
@@ -102,7 +102,7 @@ namespace FoodCornerApi.Services.Concretes
                 if (!_dataContext.Tags.Any(c => c.Id == tagId))
                 {
                     _logger.LogWarning($"Tag with id({tagId}) not found in db ");
-                    throw new NotFoundException("Notfound");
+                    throw new NotFoundException("Tag", tagId);
                 }
             }
         }
@@ -113,7 +113,7 @@ namespace FoodCornerApi.Services.Concretes
                 if (!_dataContext.Categories.Any(c => c.Id == categoryId))
                 {
                     _logger.LogWarning($"Category with id({categoryId}) not found in db ");
-                    throw new Exception($"Category {categoryId} not Found");
+                    throw new NotFoundException("Category", categoryId);
                 }
             }
         }

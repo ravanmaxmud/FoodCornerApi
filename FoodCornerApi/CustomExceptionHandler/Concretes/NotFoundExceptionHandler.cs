@@ -11,6 +11,7 @@ namespace FoodCornerApi.CustomExceptionHandler.Concretes
         public ExceptionResultDto Handle(Exception exception)
         {
             var notFoundException = (NotFoundException)exception;
+
             return new ExceptionResultDto(MediaTypeNames.Text.Plain, (int)HttpStatusCode.NotFound, notFoundException.Message);
         }
     }

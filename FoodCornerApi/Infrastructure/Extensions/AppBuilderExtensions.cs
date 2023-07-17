@@ -1,5 +1,7 @@
 ﻿using FoodCornerApi.Exceptions;
 using FoodCornerApi.Extensions;
+using System.Globalization;
+using FoodCornerApi.Middlewares;
 
 namespace FoodCornerApi.Infrastructure.Extensions
 {
@@ -11,13 +13,14 @@ namespace FoodCornerApi.Infrastructure.Extensions
             
             app.UseStaticFiles();
 
-            app.UseExceptionHandler();
+            app.UseCustomExceptionHandler();
 
             app.UseSwagger();
             app.UseSwaggerUI();
-
             //app.ConfigureExceptionHandler();
-            app.ConfigureCustomExceptionMiddleware();
+          
+            //app.ConfigureCustomExceptionMiddleware();
+
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -27,8 +30,13 @@ namespace FoodCornerApi.Infrastructure.Extensions
                 throw new NotFoundException("Information is not found in DB");
             });
 
-            app.MapControllers();
+            app.MapGet("/bad-request-example", () =>
+            {
+                throw new BadRequestException("Requester URL is invalid");
+            });
 
+            app.MapControllers();
+    
             //app.MapControllerRoute(
             //    name: "default",
             //    pattern: "{area=exists}/{controller=home}/{action=index}");

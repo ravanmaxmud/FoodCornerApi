@@ -8,6 +8,8 @@ using FoodCornerApi.BackgroundServices;
 using FoodCornerApi.Infrastructure.Configurations;
 using FoodCornerApi.Areas.Admin.Mappers;
 using FoodCornerApi.CustomExceptionHandler.Concretes;
+using Microsoft.AspNetCore.Mvc;
+using FoodCornerApi.CustomExceptionHandler;
 
 namespace FoodCornerApi.Infrastructure.Extensions
 {
@@ -33,7 +35,10 @@ namespace FoodCornerApi.Infrastructure.Extensions
                 opt.CustomSchemaIds(type => type.ToString());
             });
 
+            services.AddTransient<ExceptionHandlerCoordinator>();
             services.AddScoped<NotFoundExceptionHandler>();
+            services.AddScoped<BadRequestExceptionHandler>();
+            services.AddScoped<GeneralExceptionHandler>();
 
 
             services.AddAutoMapper(typeof(Program));
@@ -41,7 +46,7 @@ namespace FoodCornerApi.Infrastructure.Extensions
             //services.AddScoped<ValidationCurrentUserAttribute>();
 
             services.AddSignalR();
-        
+
 
             services.AddHostedService<DeleteExpiredUpUsers>();
             services.AddHostedService<DeleteIsSeenMessages>();
