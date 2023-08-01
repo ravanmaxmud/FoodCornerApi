@@ -1,10 +1,10 @@
-﻿//using FoodCornerApi.Database.Models;
+﻿using FoodCornerApi.Database.Models;
 
-//namespace FoodCornerApi.Services.Abstracts
-//{
-//    public interface IUserActivationService
-//    {
-//        Task SendActivationUrlAsync(User user);
-//        Task SendChangePasswordUrlAsync(User user);
-//    }
-//}
+namespace FoodCornerApi.Services.Abstracts
+{
+    public interface IUserActivationService
+    {
+        Task SendActivationUrlAsync(User user);
+        Task SendChangePasswordUrlAsync(User user);
+    }
+}

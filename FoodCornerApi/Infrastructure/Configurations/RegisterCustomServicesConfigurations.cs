@@ -10,9 +10,9 @@ namespace FoodCornerApi.Infrastructure.Configurations
         {
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IProductService, ProductService>();
-            //services.AddScoped<IUserService, UserService>();
-            //services.AddScoped<IEmailService, SMTPService>();
-            //services.AddScoped<IUserActivationService, UserActivationService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEmailService, SMTPService>();
+            services.AddScoped<IUserActivationService, UserActivationService>();
             //services.AddScoped<IBasketService, BasketService>();
             //services.AddScoped<IOrderService, OrderService>();
             //services.AddScoped<ValidationCurrentUserAttribute>();

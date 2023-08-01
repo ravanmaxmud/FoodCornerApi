@@ -10,6 +10,9 @@ using FoodCornerApi.Areas.Admin.Mappers;
 using FoodCornerApi.CustomExceptionHandler.Concretes;
 using Microsoft.AspNetCore.Mvc;
 using FoodCornerApi.CustomExceptionHandler;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace FoodCornerApi.Infrastructure.Extensions
 {
@@ -18,14 +21,22 @@ namespace FoodCornerApi.Infrastructure.Extensions
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o =>
-            {
-                o.Cookie.Name = "Identity";
-                o.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-                o.LoginPath = "/authentication/login";
-                o.AccessDeniedPath = "/admin/auth/login";
-            });
-
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = configuration["Jwt:Issuer"],
+                        ValidAudience = configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                    };
+                });
+            services.AddControllers().AddJsonOptions(x =>
+               x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            services.AddMvc();
             services.AddHttpContextAccessor();
 
             services.AddUrlHelper();
@@ -50,10 +61,6 @@ namespace FoodCornerApi.Infrastructure.Extensions
 
             services.AddHostedService<DeleteExpiredUpUsers>();
             services.AddHostedService<DeleteIsSeenMessages>();
-
-
-            services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 
             services.ConfigureDatabase(configuration);

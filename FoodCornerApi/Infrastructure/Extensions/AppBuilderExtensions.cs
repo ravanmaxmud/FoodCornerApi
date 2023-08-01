@@ -17,13 +17,18 @@ namespace FoodCornerApi.Infrastructure.Extensions
 
             app.UseSwagger();
             app.UseSwaggerUI();
+
             //app.ConfigureExceptionHandler();
-          
             //app.ConfigureCustomExceptionMiddleware();
 
 
             app.UseAuthentication();
             app.UseAuthorization();
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllers();
+            //    endpoints.MapRazorPages();
+            //});
 
             app.MapGet("/not-found-example", () =>
             {

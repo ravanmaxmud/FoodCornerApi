@@ -44,7 +44,6 @@ namespace FoodCornerApi.BackgroundServices
                     if (deleteMessages.IsSeen == true)
                     {
                         dataContext.Messages.Remove(deleteMessages);
-
                     }
                     else
                     {
