@@ -43,7 +43,6 @@ namespace FoodCornerApi.Services.Concretes
         public async Task SendActivationUrlAsync(User user)
         {
             ArgumentNullException.ThrowIfNull(user);
-
             var token = GenerateActivationToken();
             var activationUrl = GenerateUrl(token, EMAIL_CONFIRMATION_ROUTE_NAME);
             await CreateUserActivationAsync(user, token, activationUrl, _activationExpireDate);
@@ -55,7 +54,6 @@ namespace FoodCornerApi.Services.Concretes
         public async Task SendChangePasswordUrlAsync(User user)
         {
             ArgumentNullException.ThrowIfNull(user);
-
             var token = GenerateActivationToken();
             var activationUrl = GenerateUrl(token, PASSWORD_CHANGE_TOKEN);
             await CreatePasswordForgetAsync(user, token, activationUrl, _activationExpireDate);
@@ -110,25 +108,11 @@ namespace FoodCornerApi.Services.Concretes
 
         private MessageDto PrepareActivationMessage(string email, string activationUrl)
         {
-            var pathToFile = _webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString() +
-            "Client" + Path.DirectorySeparatorChar.ToString() + "EmailTempalte" +
-            Path.DirectorySeparatorChar.ToString() + "ConfirimAccount.html";
-
-
-            string body = "";
-            using (StreamReader streamReader = File.OpenText(pathToFile))
-            {
-                body = streamReader.ReadToEnd();
-            }
-
-            string message = activationUrl;
-
-            string messageBody = string.Format(body,
-            message);
+            string body = EmailMessages.Body.ACTIVATION_MESSAGE
+                      .Replace(EmailMessageKeyword.ACTIVATION_URL, activationUrl);
 
             string subject = EmailMessages.Subject.ACTIVATION_MESSAGE;
-
-            return new MessageDto(email, subject, messageBody);
+            return new MessageDto(email, subject, body);
         }
 
 

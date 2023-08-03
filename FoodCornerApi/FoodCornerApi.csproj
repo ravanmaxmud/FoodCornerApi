@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Client\Controllers\" />
     <Folder Include="wwwroot\Admin\" />
     <Folder Include="wwwroot\Client\" />
   </ItemGroup>
